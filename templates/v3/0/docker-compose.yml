@@ -50,7 +50,7 @@ services:
     labels:
       io.rancher.scheduler.affinity:host_label_soft_ne: kraken=1,tiamat=1
   siem-lb:
-    image: rancher/lb-service-haproxy:v0.9.1
+    image: rancher/lb-service-haproxy:v0.9.6
     ports:
     - 443:443/tcp
     labels:
