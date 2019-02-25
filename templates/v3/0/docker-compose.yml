@@ -12,12 +12,12 @@ volumes:
     driver: rancher-nfs
   logstash-indexer-pipeline:
     driver: rancher-nfs
-  mgob-config:
-    driver: rancher-nfs
-  mgob-storage:
-    driver: rancher-nfs
-  reports_config:
-    driver: rancher-nfs
+  # mgob-config:
+    # driver: rancher-nfs
+  # mgob-storage:
+    # driver: rancher-nfs
+  # reports_config:
+    # driver: rancher-nfs
 services:
   # mgob:
     # image: ikuturso/mgob
