@@ -1,8 +1,8 @@
 version: '2'
 .catalog:
-  name: "SIEMonster V3 Final"
+  name: "SIEMonster V3 Testing-Upgrade"
   version: "3.0"
-  decription: SIEMonster Stack - SearchGuard Secured.
+  decription: SIEMonster Stack (Testing Upgrade-ONLY) - SearchGuard Secured.
   minimum_rancher_version: v1.6.10
   questions:
     - variable: SITE_DNAME
@@ -30,7 +30,7 @@ version: '2'
       required: true
       label: "Grafana Password"
       description: "Set the Grafana Password"
-      default: "s13M0nSterV3"
+      default: "s13M0nsterV3TST"
       
     - variable: "MONGODB_USER"
       type: "string"
@@ -44,7 +44,7 @@ version: '2'
       required: true
       label: "Web Application Mongo Password"
       description: "Set the Mongo Password"
-      default: "s13M0nsterV3"
+      default: "s13M0nsterV3TST"
       
     - variable: "MONGODB_DATABASE"
       type: "string"
@@ -86,7 +86,7 @@ version: '2'
       required: true
       label: "Wazuh API Password"
       description: "Set the Wazuh API Password"
-      default: "s13M0nSterV3"
+      default: "s13M0nsterV3TST"
 
     - variable: "MASTER_HEAP_SIZE"
       type: "string"
@@ -114,56 +114,56 @@ version: '2'
       required: true
       label: "CA Password"
       description: "Set the Cert Auth Password"
-      default: "s13M0nSterV3"
+      default: "s13M0nsterV3TST"
 
     - variable: "TS_PWD"
       type: "password"
       required: true
       label: "Truststore Password"
       description: "Set the Truststore Password"
-      default: "s13M0nSterV3"
+      default: "s13M0nsterV3TST"
       
     - variable: "KS_PWD"
       type: "password"
       required: true
       label: "Keystore Password"
       description: "Set the Keystore Password"
-      default: "s13M0nSterV3"
+      default: "s13M0nsterV3TST"
 
     - variable: "ELASTIC_PWD"
       type: "password"
       required: true
       label: "ES Password"
       description: "Set Elastic Password"
-      default: "s13M0nSterV3"
+      default: "s13M0nsterV3TST"
 
     - variable: "KIBANA_PWD"
       type: "password"
       required: true
       label: "Kibana Password"
       description: "Set the Kibana Password"
-      default: "s13M0nSterV3"
+      default: "s13M0nsterV3TST"
 
     - variable: "LOGSTASH_PWD"
       type: "password"
       required: true
       label: "Logstash Password"
       description: "Set the Logstash Password"
-      default: "s13M0nSterV3"
+      default: "s13M0nsterV3TST"
 
     - variable: "BEATS_PWD"
       type: "password"
       required: true
       label: "Beats Password"
       description: "Set the Beats Password"
-      default: "s13M0nSterV3"
+      default: "s13M0nsterV3TST"
       
     - variable: "MONITOR_PWD"
       type: "password"
       required: true
       label: "ES Cluster Monitoring User Password"
       description: "Set the Monitor User Password"
-      default: "s13M0nSterV3"
+      default: "s13M0nsterV3TST"
 
     - variable: "SKEDLER_USER"
       type: "password"
@@ -177,7 +177,7 @@ version: '2'
       required: true
       label: "Skedler Password"
       description: "Set the Skedler Password for the Elasticsearch connection"
-      default: "s13M0nSterV3"
+      default: "s13M0nsterV3TST"
     
     - variable: MYSQL_DATABASE
       label: MYSQL_DATABASE
@@ -267,4 +267,3 @@ services:
       initializing_timeout: 60000
       interval: 2000
       reinitializing_timeout: 60000
-        
