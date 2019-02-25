@@ -2,8 +2,8 @@ version: '2'
 volumes:
   es-config:
     driver: rancher-nfs
-  fouroneone-data:
-    driver: rancher-nfs
+#  fouroneone-data:
+#    driver: rancher-nfs
   logstash-collector-config:
     driver: rancher-nfs
   logstash-collector-pipeline:
@@ -19,38 +19,38 @@ volumes:
   reports_config:
     driver: rancher-nfs
 services:
-  mgob:
-    image: ikuturso/mgob
-    volumes:
-      - mgob-config:/config
-      - mgob-storage:/storage
-    environment:
-      MONGO_PASS: ${MONGODB_PASS}
-      MONGO_USER: ${MONGODB_USER}
-    restart: always
-    labels:
-      io.rancher.scheduler.affinity:host_label_soft_ne: kraken=1,tiamat=1
-      io.rancher.container.hostname_override: container_name
-      io.rancher.container.pull_image: always
-  haveged:
-    privileged: true
-    image: harbur/haveged:1.7c-1
-    stdin_open: true
-    tty: true
-    labels:
-      io.rancher.container.pull_image: always
-      io.rancher.scheduler.global: 'true'
-  dradis:
-    image: ikuturso/dradis
-    depends_on:
-      - redis
-    volumes:
-      - dradis-template:/home/dradis-ce/templates
-      - dradis-db:/home/dradis-ce/db
-    labels:
-      io.rancher.scheduler.affinity:host_label_soft_ne: kraken=1,tiamat=1
+  # mgob:
+    # image: ikuturso/mgob
+    # volumes:
+      # - mgob-config:/config
+      # - mgob-storage:/storage
+    # environment:
+      # MONGO_PASS: ${MONGODB_PASS}
+      # MONGO_USER: ${MONGODB_USER}
+    # restart: always
+    # labels:
+      # io.rancher.scheduler.affinity:host_label_soft_ne: kraken=1,tiamat=1
+      # io.rancher.container.hostname_override: container_name
+      # io.rancher.container.pull_image: always
+#  haveged:
+#    privileged: true
+#    image: harbur/haveged:1.7c-1
+#    stdin_open: true
+#    tty: true
+#    labels:
+#      io.rancher.container.pull_image: always
+#      io.rancher.scheduler.global: 'true'
+#  dradis:
+#    image: ikuturso/dradis
+#    depends_on:
+#      - redis
+#    volumes:
+#      - dradis-template:/home/dradis-ce/templates
+#      - dradis-db:/home/dradis-ce/db
+#    labels:
+#      io.rancher.scheduler.affinity:host_label_soft_ne: kraken=1,tiamat=1
   siem-lb:
-    image: rancher/lb-service-haproxy:v0.9.6
+    image: rancher/lb-service-haproxy
     ports:
     - 443:443/tcp
     labels:
@@ -60,72 +60,72 @@ services:
       io.rancher.container.create_agent: 'true'
     labels:
       io.rancher.scheduler.affinity:host_label_soft: makara=1
-  redis:
-    image: redis
-    restart: always
-    labels:
-      io.rancher.scheduler.affinity:host_label_soft_ne: kraken=1,tiamat=1
-  elastalert:
-    image: ikuturso/elastalert:v3
-    environment:
-      ELASTICSEARCH_USER: elastic
-      ELASTIC_PWD: ${ELASTIC_PWD}
-      ELASTICSEARCH_HOST: es-client-2
-    stdin_open: true
-    tty: true
-    volumes:
-    - elastalert_rules:/usr/share/elastalert
-    labels:
-      io.rancher.scheduler.affinity:host_label_soft_ne: kraken=1,tiamat=1
-      io.rancher.container.hostname_override: container_name
-      io.rancher.container.pull_image: always
-  gmailrelay:
-    image: ikuturso/gmailrelay
-    environment:
-      EMAIL: ${GMAILRELAY_EMAIL}
-      EMAILPASS: ${GMAILRELAY_EMAILPASS}
-      MYNETWORKS: 10.0.0.0/8 192.168.0.0/16 172.0.0.0/8
-      SYSTEM_TIMEZONE: America/Chicago
-    tty: true
-    ports:
-    - 9025:25/tcp
-    labels:
-      io.rancher.scheduler.affinity:host_label_soft_ne: kraken=1,tiamat=1
-      io.rancher.container.hostname_override: container_name
-      io.rancher.container.pull_image: always
-  alerta:
-    image: ikuturso/siemonster-siren
-    environment:
-      ADMIN_USERS: not-set
-      ALLOWED_EMAIL_DOMAIN: '*'
-      ALLOWED_ENVIRONMENTS: Production,Development
-      ALLOWED_GITHUB_ORGS: '*'
-      ALLOWED_GITLAB_GROUPS: '*'
-      AUTH_REQUIRED: 'False'
-      CLIENT_ID: not-set
-      CLIENT_SECRET: not-set
-      CUSTOMER_VIEWS: 'False'
-      GITLAB_URL: not-set
-      MONGO_URI: mongodb://alerta-db:27017/monitoring
-      ORIGIN_BLACKLIST: not-set
-      PLUGINS: reject
-      PROVIDER: basic
-    stdin_open: true
-    tty: true
-    labels:
-      io.rancher.sidekicks: alerta-db
-      io.rancher.container.hostname_override: container_name
-      io.rancher.container.pull_image: always
-      io.rancher.scheduler.affinity:host_label_soft_ne: kraken=1,tiamat=1
-  minemeld:
-    image: ikuturso/minemeld:1.0
-    stdin_open: true
-    tty: true
-    tmpfs: /run
-    labels:
-      io.rancher.scheduler.affinity:host_label_soft_ne: kraken=1,tiamat=1
-      io.rancher.container.hostname_override: container_name
-      io.rancher.container.pull_image: always
+#  redis:
+#    image: redis
+#    restart: always
+#    labels:
+#      io.rancher.scheduler.affinity:host_label_soft_ne: kraken=1,tiamat=1
+#  elastalert:
+#    image: ikuturso/elastalert:v3
+#    environment:
+#      ELASTICSEARCH_USER: elastic
+#      ELASTIC_PWD: ${ELASTIC_PWD}
+#      ELASTICSEARCH_HOST: es-client-2
+#    stdin_open: true
+#    tty: true
+#    volumes:
+#    - elastalert_rules:/usr/share/elastalert
+#    labels:
+#      io.rancher.scheduler.affinity:host_label_soft_ne: kraken=1,tiamat=1
+#      io.rancher.container.hostname_override: container_name
+#      io.rancher.container.pull_image: always
+#  gmailrelay:
+#    image: ikuturso/gmailrelay
+#    environment:
+#      EMAIL: ${GMAILRELAY_EMAIL}
+#      EMAILPASS: ${GMAILRELAY_EMAILPASS}
+#      MYNETWORKS: 10.0.0.0/8 192.168.0.0/16 172.0.0.0/8
+#      SYSTEM_TIMEZONE: America/Chicago
+#    tty: true
+#    ports:
+#    - 9025:25/tcp
+#    labels:
+#      io.rancher.scheduler.affinity:host_label_soft_ne: kraken=1,tiamat=1
+#      io.rancher.container.hostname_override: container_name
+#      io.rancher.container.pull_image: always
+  # alerta:
+    # image: ikuturso/siemonster-siren
+    # environment:
+      # ADMIN_USERS: not-set
+      # ALLOWED_EMAIL_DOMAIN: '*'
+      # ALLOWED_ENVIRONMENTS: Production,Development
+      # ALLOWED_GITHUB_ORGS: '*'
+      # ALLOWED_GITLAB_GROUPS: '*'
+      # AUTH_REQUIRED: 'False'
+      # CLIENT_ID: not-set
+      # CLIENT_SECRET: not-set
+      # CUSTOMER_VIEWS: 'False'
+      # GITLAB_URL: not-set
+      # MONGO_URI: mongodb://alerta-db:27017/monitoring
+      # ORIGIN_BLACKLIST: not-set
+      # PLUGINS: reject
+      # PROVIDER: basic
+    # stdin_open: true
+    # tty: true
+    # labels:
+      # io.rancher.sidekicks: alerta-db
+      # io.rancher.container.hostname_override: container_name
+      # io.rancher.container.pull_image: always
+      # io.rancher.scheduler.affinity:host_label_soft_ne: kraken=1,tiamat=1
+  # minemeld:
+    # image: ikuturso/minemeld:1.0
+    # stdin_open: true
+    # tty: true
+    # tmpfs: /run
+    # labels:
+      # io.rancher.scheduler.affinity:host_label_soft_ne: kraken=1,tiamat=1
+      # io.rancher.container.hostname_override: container_name
+      # io.rancher.container.pull_image: always
   es-master:
     cap_add:
     - IPC_LOCK
@@ -273,35 +273,35 @@ services:
     labels:
       io.rancher.container.hostname_override: container_name
       io.rancher.scheduler.affinity:host_label_soft_ne: kraken=1,tiamat=1
-  '411':
-    labels:
-      io.rancher.container.pull_image: always
-      io.rancher.sidekicks: mysqldb
-      io.rancher.scheduler.affinity:host_label_soft_ne: kraken=1,tiamat=1
-    image: ikuturso/foo:6.13
-    environment:
-    - "MYSQL_DATABASE=${MYSQL_DATABASE}"
-    - "MYSQL_USER=${MYSQL_USER}"
-    - "MYSQL_PASS=${MYSQL_PASS}"
-    - "SITE_ID=${SITE_ID}"
-    - "ELASTIC_PWD=${ELASTIC_PWD}"
-    volumes:
-      - fouroneone-data:/data
-      - es-config:/elasticsearch/config:ro
-    depends_on:
-      - mysqldb
-    hostname: 411.${SITE_DNAME}
-  mysqldb:
-    image: ikuturso/mysql-foo
-    container_name: 411data
-    environment:
-    - "MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}"
-    - "MYSQL_DATABASE=${MYSQL_DATABASE}"
-    - "MYSQL_USER=${MYSQL_USER}"
-    - "MYSQL_PASSWORD=${MYSQL_PASS}"
-    labels:
-      io.rancher.container.pull_image: always
-      io.rancher.scheduler.affinity:host_label_soft_ne: kraken=1,tiamat=1
+  # '411':
+    # labels:
+      # io.rancher.container.pull_image: always
+      # io.rancher.sidekicks: mysqldb
+      # io.rancher.scheduler.affinity:host_label_soft_ne: kraken=1,tiamat=1
+    # image: ikuturso/foo:6.13
+    # environment:
+    # - "MYSQL_DATABASE=${MYSQL_DATABASE}"
+    # - "MYSQL_USER=${MYSQL_USER}"
+    # - "MYSQL_PASS=${MYSQL_PASS}"
+    # - "SITE_ID=${SITE_ID}"
+    # - "ELASTIC_PWD=${ELASTIC_PWD}"
+    # volumes:
+      # - fouroneone-data:/data
+      # - es-config:/elasticsearch/config:ro
+    # depends_on:
+      # - mysqldb
+    # hostname: 411.${SITE_DNAME}
+  # mysqldb:
+    # image: ikuturso/mysql-foo
+    # container_name: 411data
+    # environment:
+    # - "MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}"
+    # - "MYSQL_DATABASE=${MYSQL_DATABASE}"
+    # - "MYSQL_USER=${MYSQL_USER}"
+    # - "MYSQL_PASSWORD=${MYSQL_PASS}"
+    # labels:
+      # io.rancher.container.pull_image: always
+      # io.rancher.scheduler.affinity:host_label_soft_ne: kraken=1,tiamat=1
   kibana:
     labels:
       io.rancher.container.pull_image: always
@@ -343,7 +343,7 @@ services:
       SITE_DNAME: ${SITE_DNAME}
       ADDITIONAL_CONFIG: |
         server {
-          server_name {{`{{SITE_DNAME}}`}};
+          server_name ${SITE_DNAME};
           resolver 169.254.169.250 ipv6=off;
           set $$hostpass "siemonster:3000";
           location / {
@@ -673,188 +673,185 @@ services:
       io.rancher.container.hostname_override: container_name
       io.rancher.container.pull_image: always
       io.rancher.scheduler.affinity:host_label_soft_ne: kraken=1,tiamat=1
-  grafana:
-    image: ikuturso/grafana:v3
-    environment:
-      GF_SECURITY_ADMIN_PASSWORD: ${GF_SECURITY_ADMIN_PASSWORD}
-      GF_SECURITY_ADMIN_USER: ${GF_SECURITY_ADMIN_USER}
-      GF_USERS_ALLOW_SIGN_UP: 'false'
-    entrypoint:
-    - /setup.sh
-    volumes:
-    - grafana_data:/var/lib/grafana
-    expose:
-    - '3000'
-    labels:
-      org.label-schema.group: monitoring
-      io.rancher.scheduler.affinity:host_label_soft_ne: kraken=1,tiamat=1
-      io.rancher.container.pull_image: always
-
-  nodeexporter:
-    privileged: true
-    image: prom/node-exporter:v0.15.0
-    volumes:
-    - /proc:/host/proc:ro
-    - /sys:/host/sys:ro
-    - /:/rootfs:ro
-    expose:
-    - '9100'
-    user: root
-    command:
-    - --path.procfs=/host/proc
-    - --path.sysfs=/host/sys
-    - --collector.filesystem.ignored-mount-points=^/(sys|proc|dev|host|etc)($$|/)
-    labels:
-      org.label-schema.group: monitoring
-      io.rancher.scheduler.global: 'true'
-  cadvisor:
-    image: google/cadvisor:v0.27.1
-    volumes:
-    - /:/rootfs:ro
-    - /var/run:/var/run:rw
-    - /sys:/sys:ro
-    - /var/lib/docker/:/var/lib/docker:ro
-    - /cgroup:/cgroup:ro
-    expose:
-    - '8080'
-    labels:
-      org.label-schema.group: monitoring
-      io.rancher.scheduler.global: 'true'
-  prometheus:
-    image: ikuturso/prometheus:1d
-    volumes:
-    - prometheus_data:/prometheus
-    - prometheus_rules:/etc/prometheus
-    ports:
-    - 9090:9090/tcp
-    expose:
-    - '9090'
-    environment:
-      ELASTIC_PWD: ${ELASTIC_PWD}
-    labels:
-      io.rancher.scheduler.affinity:host_label_soft_ne: kraken=1,tiamat=1
-      org.label-schema.group: monitoring
-  alertmanager:
-    image: ikuturso/alertmanager
-    volumes:
-    - alertmanager:/etc/alertmanager/
-    expose:
-    - '9093'
-    command:
-    - -config.file=/etc/alertmanager/config.yml
-    - -storage.path=/alertmanager
-    labels:
-      org.label-schema.group: monitoring
-      io.rancher.scheduler.affinity:host_label_soft_ne: kraken=1,tiamat=1
-  rabbitmq-exporter:
-    image: kbudde/rabbitmq-exporter
-    environment:
-      RABBIT_URL: 'http://rabbitmq:15672'
-      RABBIT_USER: ${RABBITMQ_USER}
-      RABBIT_PASSWORD: ${RABBITMQ_PASSWORD}
-      PUBLISH_PORT: '9092'
-    labels:
-      io.rancher.scheduler.affinity:host_label_soft_ne: kraken=1,tiamat=1
-      org.label-schema.group: monitoring
-  ir:
-    image: ikuturso/siemonster-ir
-    stdin_open: true
-    tty: true
-    labels:
-      io.rancher.scheduler.affinity:host_label_soft_ne: kraken=1,tiamat=1
-      io.rancher.container.hostname_override: container_name
-      io.rancher.container.pull_image: always
-  alerta-db:
-    image: mongo
-    stdin_open: true
-    volumes:
-    - /data/db
-    tty: true
-    labels:
-      io.rancher.container.pull_image: always
-      io.rancher.container.hostname_override: container_name
-      io.rancher.scheduler.affinity:host_label_soft_ne: kraken=1,tiamat=1
-  event:
-    image: ikuturso/event
-    stdin_open: true
-    tty: true
-    links:
-    - alerta:alerta
-    command:
-    - alerta
-    - send
-    - -r
-    - web01
-    - -e
-    - NodeUp
-    - -E
-    - Production
-    - -S
-    - Website
-    - -s
-    - major
-    - -t
-    - SIEMonster is UP.
-    - -v
-    - AWESOME
-    labels:
-      io.rancher.container.pull_image: always
-      io.rancher.container.start_once: 'true'
-      io.rancher.scheduler.affinity:host_label_soft_ne: kraken=1,tiamat=1
-  openaudit:
-    image: ikuturso/openaudit
-    stdin_open: true
-    tty: true
-    labels:
-      io.rancher.scheduler.affinity:host_label_soft_ne: kraken=1,tiamat=1
-      io.rancher.container.hostname_override: container_name
-      io.rancher.container.pull_image: always
-  reporting:
-    image: ikuturso/reporting:final
-    stdin_open: true
-    tty: true
-    labels:
-      io.rancher.scheduler.affinity:host_label_soft_ne: kraken=1,tiamat=1
-    volumes:
-    - es-config:/usr/share/elasticsearch/config:ro
-    environment:
-      ELASTIC_PWD: ${ELASTIC_PWD}
-      KIBANA_PWD: ${KIBANA_PWD}
-      GF_SECURITY_ADMIN_PASSWORD: ${GF_SECURITY_ADMIN_PASSWORD}
-      GF_SECURITY_ADMIN_USER: ${GF_SECURITY_ADMIN_USER}
-    volumes:
-      - es-config:/elasticsearch/config:ro
-  logstash-collector-exporter:
-    image: bonniernews/logstash_exporter
-    links:
-    - logstash-collector:logstash
-    depends_on:
-      - logstash-collector
-    command:
-    - --logstash.endpoint
-    - http://logstash:9600
-    labels:
-      io.rancher.scheduler.affinity:host_label: capricorn=1
-      io.rancher.container.hostname_override: container_name
-      io.rancher.container.pull_image: always
-  logstash-indexer-exporter:
-    image: bonniernews/logstash_exporter
-    links:
-    - logstash-indexer:logstash
-    depends_on:
-      - logstash-indexer
-    command:
-    - --logstash.endpoint
-    - http://logstash:9600
-    labels:
-      io.rancher.scheduler.affinity:host_label: capricorn=1
-      io.rancher.container.hostname_override: container_name
-      io.rancher.container.pull_image: always
+  # grafana:
+    # image: ikuturso/grafana:v3
+    # environment:
+      # GF_SECURITY_ADMIN_PASSWORD: ${GF_SECURITY_ADMIN_PASSWORD}
+      # GF_SECURITY_ADMIN_USER: ${GF_SECURITY_ADMIN_USER}
+      # GF_USERS_ALLOW_SIGN_UP: 'false'
+    # entrypoint:
+    # - /setup.sh
+    # volumes:
+    # - grafana_data:/var/lib/grafana
+    # expose:
+    # - '3000'
+    # labels:
+      # org.label-schema.group: monitoring
+      # io.rancher.scheduler.affinity:host_label_soft_ne: kraken=1,tiamat=1
+      # io.rancher.container.pull_image: always
+  # nodeexporter:
+    # privileged: true
+    # image: prom/node-exporter:v0.15.0
+    # volumes:
+    # - /proc:/host/proc:ro
+    # - /sys:/host/sys:ro
+    # - /:/rootfs:ro
+    # expose:
+    # - '9100'
+    # user: root
+    # command:
+    # - --path.procfs=/host/proc
+    # - --path.sysfs=/host/sys
+    # - --collector.filesystem.ignored-mount-points=^/(sys|proc|dev|host|etc)($$|/)
+    # labels:
+      # org.label-schema.group: monitoring
+      # io.rancher.scheduler.global: 'true'
+  # cadvisor:
+    # image: google/cadvisor:v0.27.1
+    # volumes:
+    # - /:/rootfs:ro
+    # - /var/run:/var/run:rw
+    # - /sys:/sys:ro
+    # - /var/lib/docker/:/var/lib/docker:ro
+    # - /cgroup:/cgroup:ro
+    # expose:
+    # - '8080'
+    # labels:
+      # org.label-schema.group: monitoring
+      # io.rancher.scheduler.global: 'true'
+  # prometheus:
+    # image: ikuturso/prometheus:1d
+    # volumes:
+    # - prometheus_data:/prometheus
+    # - prometheus_rules:/etc/prometheus
+    # ports:
+    # - 9090:9090/tcp
+    # expose:
+    # - '9090'
+    # environment:
+      # ELASTIC_PWD: ${ELASTIC_PWD}
+    # labels:
+      # io.rancher.scheduler.affinity:host_label_soft_ne: kraken=1,tiamat=1
+      # org.label-schema.group: monitoring
+  # alertmanager:
+    # image: ikuturso/alertmanager
+    # volumes:
+    # - alertmanager:/etc/alertmanager/
+    # expose:
+    # - '9093'
+    # command:
+    # - -config.file=/etc/alertmanager/config.yml
+    # - -storage.path=/alertmanager
+    # labels:
+      # org.label-schema.group: monitoring
+      # io.rancher.scheduler.affinity:host_label_soft_ne: kraken=1,tiamat=1
+  # rabbitmq-exporter:
+    # image: kbudde/rabbitmq-exporter
+    # environment:
+      # RABBIT_URL: 'http://rabbitmq:15672'
+      # RABBIT_USER: ${RABBITMQ_USER}
+      # RABBIT_PASSWORD: ${RABBITMQ_PASSWORD}
+      # PUBLISH_PORT: '9092'
+    # labels:
+      # io.rancher.scheduler.affinity:host_label_soft_ne: kraken=1,tiamat=1
+      # org.label-schema.group: monitoring
+  # ir:
+    # image: ikuturso/siemonster-ir
+    # stdin_open: true
+    # tty: true
+    # labels:
+      # io.rancher.scheduler.affinity:host_label_soft_ne: kraken=1,tiamat=1
+      # io.rancher.container.hostname_override: container_name
+      # io.rancher.container.pull_image: always
+  # alerta-db:
+    # image: mongo
+    # stdin_open: true
+    # volumes:
+    # - /data/db
+    # tty: true
+    # labels:
+      # io.rancher.container.pull_image: always
+      # io.rancher.container.hostname_override: container_name
+      # io.rancher.scheduler.affinity:host_label_soft_ne: kraken=1,tiamat=1
+  # event:
+    # image: ikuturso/event
+    # stdin_open: true
+    # tty: true
+    # links:
+    # - alerta:alerta
+    # command:
+    # - alerta
+    # - send
+    # - -r
+    # - web01
+    # - -e
+    # - NodeUp
+    # - -E
+    # - Production
+    # - -S
+    # - Website
+    # - -s
+    # - major
+    # - -t
+    # - SIEMonster is UP.
+    # - -v
+    # - AWESOME
+    # labels:
+      # io.rancher.container.pull_image: always
+      # io.rancher.container.start_once: 'true'
+      # io.rancher.scheduler.affinity:host_label_soft_ne: kraken=1,tiamat=1
+  # openaudit:
+    # image: ikuturso/openaudit
+    # stdin_open: true
+    # tty: true
+    # labels:
+      # io.rancher.scheduler.affinity:host_label_soft_ne: kraken=1,tiamat=1
+      # io.rancher.container.hostname_override: container_name
+      # io.rancher.container.pull_image: always
+  # reporting:
+    # image: ikuturso/reporting:final
+    # stdin_open: true
+    # tty: true
+    # labels:
+      # io.rancher.scheduler.affinity:host_label_soft_ne: kraken=1,tiamat=1
+    # volumes:
+    # - es-config:/usr/share/elasticsearch/config:ro
+    # environment:
+      # ELASTIC_PWD: ${ELASTIC_PWD}
+      # KIBANA_PWD: ${KIBANA_PWD}
+      # GF_SECURITY_ADMIN_PASSWORD: ${GF_SECURITY_ADMIN_PASSWORD}
+      # GF_SECURITY_ADMIN_USER: ${GF_SECURITY_ADMIN_USER}
+    # volumes:
+      # - es-config:/elasticsearch/config:ro
+  # logstash-collector-exporter:
+    # image: bonniernews/logstash_exporter
+    # links:
+    # - logstash-collector:logstash
+    # depends_on:
+      # - logstash-collector
+    # command:
+    # - --logstash.endpoint
+    # - http://logstash:9600
+    # labels:
+      # io.rancher.scheduler.affinity:host_label: capricorn=1
+      # io.rancher.container.hostname_override: container_name
+      # io.rancher.container.pull_image: always
+  # logstash-indexer-exporter:
+    # image: bonniernews/logstash_exporter
+    # links:
+    # - logstash-indexer:logstash
+    # depends_on:
+      # - logstash-indexer
+    # command:
+    # - --logstash.endpoint
+    # - http://logstash:9600
+    # labels:
+      # io.rancher.scheduler.affinity:host_label: capricorn=1
+      # io.rancher.container.hostname_override: container_name
+      # io.rancher.container.pull_image: always
   dashboard-loader:
     image: ikuturso/dashloader
     tty: true
     labels:
       io.rancher.container.pull_image: always
       io.rancher.container.start_once: 'true'
-
- 
